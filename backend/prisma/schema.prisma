@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int    @id @default(autoincrement())
+  firstname String
+  lastname  String
+  email     String @unique
+  password  String
+  trips     Trip[]
+
+  @@map("users")
+}
+
+model Trip {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  start       String
+  destination String
+  startDate   DateTime @map("start_date")
+  finishDate  DateTime @map("finish_date")
+  price       Int
+  description String?
+  favorites   Boolean  @default(false)
+  flightLink  String?  @map("flight_link")
+  stayLink    String?  @map("stay_link")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("trips")
+}
